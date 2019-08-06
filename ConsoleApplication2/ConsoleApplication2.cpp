@@ -3,13 +3,18 @@
 
 #include "pch.h"
 #include <iostream>
-#include <ctime>
+#include <random>
 
 /* Strategy Pattern Example */
 
-
-// Sadly, not a super smart compiler since
-// I've got to order stuff around to make it to work
+// Fancy :)
+float get_random()
+{	
+	std::random_device rd;
+	static std::default_random_engine e(rd());
+	static std::uniform_real_distribution<> dis(0, 1); // rage 0 - 1
+	return dis(e);
+}
 
 // strategy.h
 class Strategy {
@@ -43,8 +48,7 @@ public:
 
 // context.cpp
 Context::Context() {
-	// classic c++ :)
-	const float flag = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	const float flag = get_random();
 
 	// scary c style cast, my my..
 	Context::s1 = flag > 0.5 ? (Strategy*) new ConcreteStrategy1() : (Strategy*) new ConcreteStrategy2();
@@ -60,10 +64,12 @@ void Context::doSmth() {
 
 int main()
 {
-	// I need to look more into random number generation
-	srand(time(NULL));
 
 	Context* c1 = new Context();
 	c1->doSmth();
 	delete c1;
+
+	// bloody windows
+	char ch;
+	std::cin >> ch;
 }
